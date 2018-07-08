@@ -129,6 +129,14 @@ end;
 constructor TWiRLClient.Create(AOwner: TComponent);
 begin
   inherited;
+if not (csDesigning in ComponentState) then
+    if TWiRLClientRegistry.Instance.Count = 0 then
+      raise Exception.Create('Add Unit [WiRL.http.Client.Indy.pas] or [WiRL.http.Client.NetHttp.pas] to your project');
+
+  if not Assigned(FHttpClient) then
+    if TWiRLClientRegistry.Instance.Count > 0 then
+      SetClientVendor(TWiRLClientRegistry.Instance.ToArray[0].Key);
+
   FWiRLEngineURL := 'http://localhost:8080/rest';
   FProxyParams := TWiRLProxyConnectionInfo.Create;
   // Set defaults
